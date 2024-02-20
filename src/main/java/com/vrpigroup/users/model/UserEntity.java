@@ -1,11 +1,12 @@
 package com.vrpigroup.users.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vrpigroup.edtech.students.model.students;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -91,16 +92,18 @@ public class UserEntity {
     @Pattern(regexp = "^[A-Za-z0-9]{8}$", message = "Invalid verification code pattern")
     private String verificationCode;
 
-    private boolean enabled;
-
     private String resetToken;
 
-    @OneToOne(mappedBy = "user", optional = false)
-    @JsonIgnore
-    private students students;
+    private boolean active;
 
-    @Column(name ="Roles")
+    private String otp;
+
+    private LocalDateTime otpGeneratedTime;
+
+    @ElementCollection(targetClass = Roles.class)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private Roles roles;
+    private Set<Roles> roles;
+
 
 }

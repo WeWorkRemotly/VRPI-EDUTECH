@@ -2,17 +2,27 @@ package com.vrpigroup.users.repositories;
 
 import com.vrpigroup.users.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepo extends JpaRepository<UserEntity, Long> {
+import java.util.Optional;
 
-    boolean findByUserNameAndEmail(String name, String email);
+@Repository
+@EnableJpaRepositories
+public interface UserRepo extends JpaRepository<UserEntity, Long> {
+   /* UserEntity findByUserNameAAndEmail(String username, String email);
+
+    UserEntity findByUserNameAndPassword(String username, String password);
 
     UserEntity findByUserName(String username);
 
-    UserEntity findByResetToken(String token);
+    Iterable<UserEntity> findByRole(String role);*/
 
-    UserEntity findByEmail(String email);
+    Optional<UserEntity> findByEmail(String email);
 
+    Object findByActive(boolean b);
+
+    UserEntity findByName(String name);
+
+    UserEntity findByPhoneNumber(String phoneNumber);
 }
