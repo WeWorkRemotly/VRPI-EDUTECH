@@ -14,11 +14,19 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+
+/**
+ * UserService is a class that holds the user service functionality.
+ * @Author Aman Raj
+ * @version 1.0
+ * @since 2021-06-22
+ * @apiNote This is a user service class
+ * @Email :amanrashm@gmail.com
+ */
 
 @Service
 @Slf4j
@@ -55,6 +63,11 @@ public class UserService{
         user.setOtp(otp);
         user.setOtpGeneratedTime(LocalDateTime.now());
         userRepository.save(user);
+        try {
+            emailUtil.sendConfirmationEmail(user.getEmail(), user.getName());
+        } catch (MessagingException e) {
+            throw new RuntimeException("Unable to send confirmation email. Please try again.");
+        }
         return "User registration successful";
     }
 
@@ -178,8 +191,26 @@ public class UserService{
 
     public Map<String, Object> getAllUsers() {
         var allUsers = userRepository.findAll();
-        return (Map<String, Object>) convertUserEntitiesToMaps(allUsers);
+        return getStringObjectMap(allUsers);
     }
+
+    private Map<String, Object> getStringObjectMap(List<UserEntity> users) {
+        Map<String, Object> resultMap = new HashMap<>();
+        for (UserEntity user : users) {
+            resultMap.put("userId", user.getId());
+            resultMap.put("username", user.getName());
+            resultMap.put("email", user.getEmail());
+            resultMap.put("password", user.getPassword());
+            resultMap.put("fathersName", user.getFathersName());
+            resultMap.put("address", user.getAddress());
+            resultMap.put("phoneNumber", user.getPhoneNumber());
+            resultMap.put("countryCode", user.getCountryCode());
+            resultMap.put("district", user.getDistrict());
+            resultMap.put("active", user.isActive());
+        }
+        return resultMap;
+    }
+
 
 
     public String deleteUser(String email) {

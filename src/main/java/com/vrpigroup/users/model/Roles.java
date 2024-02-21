@@ -1,6 +1,14 @@
 package com.vrpigroup.users.model;
 import lombok.Getter;
 
+/**
+ * Roles is an enum class that holds the roles of the user.
+ * @Author Aman Raj
+ * @version 1.0
+ * @since 2021-06-22
+ * @apiNote This is a roles enum class
+ * @Conact Us : amanrashm@gmail.com
+ */
 @Getter
 public enum Roles {
     ROLE_STUDENT("ROLE_STUDENT"),

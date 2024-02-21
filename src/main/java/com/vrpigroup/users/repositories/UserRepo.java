@@ -4,8 +4,16 @@ import com.vrpigroup.users.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
+
+/**
+ * UserRepo is a repository interface that holds the user details.
+ * @Author Aman Raj
+ * @version 1.0
+ * @since 2021-06-22
+ * @apiNote This is a user repository interface
+ * @Conact Us :amanrashm@gmail.com
+ */
 
 @Repository
 @EnableJpaRepositories

@@ -97,14 +97,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Throwable {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests( auth -> auth
-                        /*.requestMatchers(AUTH_WHITELIST).permitAll()*/
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/vrpi-users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/vrpi-users/verify-account").permitAll()
                         .requestMatchers(HttpMethod.POST, "/vrpi-users/regenerate-otp").permitAll()
                         .requestMatchers(HttpMethod.POST, "/vrpi-users/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/vrpi-users/get-user").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui/index.html").permitAll()
+                        // Add a default configuration for any other request
+                        .anyRequest().authenticated() // You can customize this based on your requirements
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(withDefaults())

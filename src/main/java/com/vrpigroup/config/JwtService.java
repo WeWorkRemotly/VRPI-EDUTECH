@@ -4,12 +4,19 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
+
+/**
+ * JwtService is a class that holds the jwt service.
+ * @Author Aman Raj
+ * @version 1.0
+ * @since 2021-06-22
+ * @apiNote This is a jwt service class
+ * @Email :amanrashm@gmail.com
+ */
 
 @Component
 public class JwtService {

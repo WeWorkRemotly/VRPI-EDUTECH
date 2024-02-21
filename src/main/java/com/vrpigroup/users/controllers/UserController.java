@@ -1,17 +1,26 @@
 package com.vrpigroup.users.controllers;
 
 import com.vrpigroup.users.dto.LoginDto;
-import com.vrpigroup.users.dto.RegisterDto;
 import com.vrpigroup.users.model.UserEntity;
 import com.vrpigroup.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
+/**
+ * UserController is a class that handles all the requests related to user
+ * management.
+ * @Author Aman Raj
+ * @version 1.0
+ * @since 2021-06-22
+ * @apiNote This is a user controller class
+ * @Conact Us :amanrashm@gmail.com
+ * @see UserService
+ */
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(value = "/vrpi-users")
 public class UserController {
@@ -19,8 +28,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/register")
-    public ResponseEntity<String> register(@RequestBody /*RegisterDto*/UserEntity registerDto) {
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody UserEntity registerDto) {
         try {
             userService.register(registerDto);
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -30,7 +39,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/verify-account")
+    @PostMapping("/verify-account")
     public ResponseEntity<String> verifyAccount(@RequestParam String email, @RequestParam String otp) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -50,7 +59,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
+    @PutMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
@@ -59,6 +68,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed: " + e.getMessage());
         }
     }
+
 
     @GetMapping("/get-user")
     public ResponseEntity<Map<String, Object>> getUser(@RequestParam String email) {

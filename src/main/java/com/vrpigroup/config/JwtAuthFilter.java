@@ -14,6 +14,15 @@ import com.vrpigroup.users.service.UserService;
 import java.io.IOException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+/**
+ * JwtAuthFilter is a class that holds the jwt auth filter.
+ * @Author Aman Raj
+ * @version 1.0
+ * @since 2021-06-22
+ * @apiNote This is a jwt auth filter class
+ * @Email : amanrashm@gmail.com
+ */
+
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
