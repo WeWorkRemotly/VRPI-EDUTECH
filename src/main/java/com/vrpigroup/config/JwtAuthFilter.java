@@ -14,6 +14,15 @@ import com.vrpigroup.users.service.UserService;
 import java.io.IOException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+/**
+ * JwtAuthFilter is a class that holds the jwt auth filter.
+ * @Author Aman Raj
+ * @version 1.0
+ * @since 2021-06-22
+ * @apiNote This is a jwt auth filter class
+ * @Email : amanrashm@gmail.com
+ */
+
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -22,6 +31,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtConfig jwtConfig;
+
+    private String getSecret() {
+        return jwtConfig.getSecret();
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response,
@@ -34,11 +50,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             username = jwtService.extractUsername(token);
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            var userDetails = userService.loadUserByUsername(username);
+            var userDetails = userService.getUserByUsername(username);
             if (jwtService.validateToken(token, String.valueOf(userDetails))) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
-                        null,
-                        userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails.getClass(),
+                        userDetails,
+                        null);
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }

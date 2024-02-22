@@ -1,14 +1,26 @@
 package com.vrpigroup.users.controllers;
 
+import com.vrpigroup.users.dto.LoginDto;
 import com.vrpigroup.users.model.UserEntity;
 import com.vrpigroup.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
+/**
+ * UserController is a class that handles all the requests related to user
+ * management.
+ * @Author Aman Raj
+ * @version 1.0
+ * @since 2021-06-22
+ * @apiNote This is a user controller class
+ * @Conact Us :amanrashm@gmail.com
+ * @see UserService
+ */
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(value = "/vrpi-users")
 public class UserController {
@@ -16,45 +28,105 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody UserEntity user) {
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody UserEntity registerDto) {
         try {
-            userService.userSignup(user);
-            return ResponseEntity.ok("Signup successful. Verification email sent to " + user.getEmail());
+            userService.register(registerDto);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("Signup successful. Verification email sent to " + registerDto.getEmail());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Signup failed: " + e.getMessage());
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> credentials) {
-        var username = credentials.get("username");
-        var password = credentials.get("password");
-        var result = userService.login(username, password);
-        if (result.equals("Successfully logged in")) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
+    @PostMapping("/verify-account")
+    public ResponseEntity<String> verifyAccount(@RequestParam String email, @RequestParam String otp) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(userService.verifyAccount(email, otp));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Verification failed: " + e.getMessage());
         }
     }
 
-    @PostMapping("/request-reset")
-    public ResponseEntity<String> requestPasswordReset(@RequestParam String email) {
+    @PutMapping("/regenerate-otp")
+    public ResponseEntity<String> regenerateOtp(@RequestParam String email) {
         try {
-            userService.generateResetToken(email);
-            return ResponseEntity.ok("Reset link has been sent to " + email);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(userService.regenerateOtp(email));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to generate reset link: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Otp regeneration failed: " + e.getMessage());
         }
     }
 
-    @PostMapping("/reset")
-    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
+    @PutMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
         try {
-            userService.resetPassword(token, newPassword);
-            return ResponseEntity.ok("Password reset successfully.");
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(userService.login(loginDto));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to reset password: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed: " + e.getMessage());
         }
     }
+
+
+    @GetMapping("/get-user")
+    public ResponseEntity<Map<String, Object>> getUser(@RequestParam String email) {
+        return new ResponseEntity<>(userService.getUser(email), HttpStatus.OK);
+    }
+
+    @PutMapping("/update-user")
+    public ResponseEntity<String> updateUser(@RequestParam String email, @RequestBody Map<String, Object> updates) {
+        return new ResponseEntity<>(userService.updateUser(email, updates), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete-user")
+    public ResponseEntity<String> deleteUser(@RequestParam String email) {
+        return new ResponseEntity<>(userService.deleteUser(email), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-all-users")
+    public ResponseEntity<Map<String, Object>> getAllUsers() {
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-verified-users")
+    public ResponseEntity<Map<String, Object>> getVerifiedUsers() {
+        return new ResponseEntity<>(userService.getVerifiedUsers(), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-unverified-users")
+    public ResponseEntity<Map<String, Object>> getUnverifiedUsers() {
+        return new ResponseEntity<>(userService.getUnverifiedUsers(), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-user-by-id")
+    public ResponseEntity<Map<String, Object>> getUserById(@RequestParam Long id) {
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-user-by-name")
+    public ResponseEntity<Map<String, Object>> getUserByName(@RequestParam String name) {
+        return new ResponseEntity<>(userService.getUserByName(name), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-user-by-email")
+    public ResponseEntity<Map<String, Object>> getUserByEmail(@RequestParam String email) {
+        return new ResponseEntity<>(userService.getUserByEmail(email), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-user-by-phone")
+    public ResponseEntity<Map<String, Object>> getUserByPhone(@RequestParam String phone) {
+        return new ResponseEntity<>(userService.getUserByPhone(phone), HttpStatus.OK);
+    }
+
+    /*@PostMapping("/login-linkedin")
+    public ResponseEntity<String> loginLinkedin(@RequestBody Map<String, Object> linkedinData) {
+        return new ResponseEntity<>(userService.loginLinkedin(linkedinData), HttpStatus.OK);
+    }*/
+
+    /*@PostMapping("/login-gmail")
+    public ResponseEntity<String> loginGmail(@RequestBody Map<String, Object> GmailData) throws FileNotFoundException {
+        return new ResponseEntity<>(userService.loginGmail(GmailData), HttpStatus.OK);
+    }*/
 }
